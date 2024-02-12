@@ -3,6 +3,8 @@ const bodyParser = require('body-parser');
 const connection = require("../database/conexion");
 const usuariosController = {};
 
+// Esta es una prueba 
+
 usuariosController.obtenerUsuarios = (req, res) => {
   const user = connection.query('SELECT * FROM usuario ORDER BY 1 DESC LIMIT', (err, result) => {
     if (err) throw err;
