@@ -1,23 +1,11 @@
-const mysql = require('mysql');
+const mysql = require("mysql2/promise");
 
-const dbhost = "159.223.182.177";
-const dbusuario = "sipro_development";
-const dbpassword = "U1m8ma9@2";
-const db = "sipro_development";
-
-const connection = mysql.createConnection({
-  host: dbhost,
-  user: dbusuario,
-  password: dbpassword,
-  database: db
-});
-
-connection.connect((err) => {
-  if (err) {
-    console.error('Error connecting to the database: ', err);
-    return;
-  }
-  console.log('Connected to the MySQL server.');
+const connection = mysql.createPool({
+  host: "159.223.182.177",
+  user: "sipro_development",
+  password: "U1m8ma9@2",
+  database: "sipro_development",
+  port: 3306,
 });
 
 module.exports = connection;

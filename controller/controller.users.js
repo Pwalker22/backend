@@ -1,52 +1,70 @@
-const express = require('express');
-const bodyParser = require('body-parser');
-const connection = require("../database/conexion");
-const usuariosController = {};
+const connection = require("../database/conexion")
 
-// Esta es una prueba 
+const allUser = async (req, res) => {
+  try{
+    const query = await connection.execute(`SELECT * FROM user ORDER BY 1 DESC`);
+    return res.json(query);
+  }catch(error){
+    return({
+      status: 404,
+      send: "error",
+      data: error.message,
+    })
+  }
+}
 
-usuariosController.obtenerUsuarios = (req, res) => {
-  const user = connection.query('SELECT * FROM usuario ORDER BY 1 DESC LIMIT', (err, result) => {
-    if (err) throw err;
-    res.json(result);
-  });
+const addUser = async (req, res) => {
+  try{
+    const { userName, userPhone, userState } = req.body;
+    await connection.execute(`INSERT INTO user (userName, userPhone, userState) VALUE ('${userName}','${userPhone}','${userState}')`)
+      return res.json({
+        message: 'Registro guardado'
+      })
+  }catch(error){
+    return ({
+      status: 404,
+      send: "error",
+      data: error.message,
+    })
+  }
+}
 
-  console.log(user);
+const updateUser = async (req, res) => {
+  try{
+    const userId = req.params.userId;
+    const { userName, userPhone, userState } = req.body;
+    await connection.execute(
+      `UPDATE user SET userName = ?, userPhone = ?, userState = ? WHERE userId = ?`,
+      [userName, userPhone, userState, userId]
+    );
+    return res.json({
+      message: 'Registro actualizado'
+    })
+  }catch(error){
+    return ({
+      status: 404,
+      data: error.message
+    })
+  }
+}
+
+const deleteUser = async (req, res) => {
+  try{
+    const userId = req.params.userId;
+    await connection.execute(`UPDATE user SET userState = 0 WHERE userId = '${userId}'`)
+    return res.json({
+      message: 'Registro eliminado'
+    })
+  }catch(error){
+    return ({
+      status: 404,
+      data: error.message
+    })
+  }
+}
+module.exports = {
+  allUser,
+  addUser,
+  updateUser,
+  deleteUser
 };
-
-
-usuariosController.agregarUsuario = (req, res) => {
-  const nuevoUsuario = req.body;
-  connection.query('INSERT INTO usuarios SET ?', nuevoUsuario, (err, result) => {
-    if (err) throw err;
-    res.json({ message: 'Usuario agregado correctamente' });
-  });
-};
-
-usuariosController.actualizarUsuario = (req, res) => {
-  const userId = req.params.id;
-  const datosActualizados = req.body;
-  connection.query('UPDATE usuarios SET ? WHERE id = ?', [datosActualizados, userId], (err, result) => {
-    if (err) throw err;
-    res.json({ message: 'Usuario actualizado correctamente' });
-  });
-};
-
-
-usuariosController.actualizarestado= (req, res) => {
-  const userId = req.params.id;
- 
-  db.query('UPDATE usuarios SET estado = estado +  1 WHERE id = ? AND estado >=  0', userId, (err, result) => {
-    if (err) {
-      res.status(500).json({ message: 'Error al actualizar el estado del usuario', error: err });
-    } else {
-      
-      if (result.affectedRows ===  0) {
-        res.json({ message: 'El usuario ya no tiene más actividades permitidas' });
-      } else {
-        res.json({ message: 'Actividad del usuario registrada con éxito' });
-      }
-    }
-  });
-};
-module.exports = usuariosController;

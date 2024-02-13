@@ -1,13 +1,13 @@
 const express = require('express');
 const body = require('body-parser');
-// const body = require('body-parser')
 const cors = require('cors');
-const userRoutes = require('./routes/route.users')
+
+const userRoutes = require('./routes/routes.users')
 const app = express();
 const port = 8080;
 
 app.use(cors());
-app.use(express.json);
+app.use(express.json());
 app.use(body.json({ limit: "50mb", extended: true }));
 app.use(body.urlencoded({ limit: "50mb", extended: true }));
 app.use(express.json());
