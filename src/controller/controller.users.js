@@ -44,11 +44,11 @@ const updateUser = async (req, res) => {
     // Extrae el ID del usuario a actualizar de los parámetros de la solicitud
     const userId = req.params.userId;
     // Extrae los nuevos datos del usuario del cuerpo de la solicitud
-    const { userName, userPhone, userState } = req.body;
+    const { userName, userPhone} = req.body;
     // Actualiza la información del usuario en la base de datos utilizando el ID
     await connection.execute(
-      `UPDATE user SET userName = ?, userPhone = ?, userState = ? WHERE userId = ?`,
-      [userName, userPhone, userState, userId]
+      `UPDATE user SET userName = ?, userPhone = ? WHERE userId = ?`,
+      [userName, userPhone, userId]
     );
     // Retorna una respuesta en formato JSON indicando que el registro ha sido actualizado
     return res.json({
